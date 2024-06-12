@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 # Formulário extra para Usuários
-class ProfilePicForm(forms.ModelForm):
+class ProfileUpdateForm(forms.ModelForm):
     profile_image = forms.ImageField(label="Profile Picture")
 
     class Meta:
@@ -50,3 +50,8 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirme sua senha'
         self.fields['password2'].label = ''
         self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Digite a mesma senha de antes, para verificação.</small></span>'
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
