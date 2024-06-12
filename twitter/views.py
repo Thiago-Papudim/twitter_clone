@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Profile, Tweet
-from .forms import TweetForm, SignUpForm, ProfilePicForm
+from .forms import TweetForm, SignUpForm, ProfileUpdateForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -103,18 +103,23 @@ def update_user(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
         profile_user = Profile.objects.get(user__id=request.user.id)
-        # Pegar formulários
-        user_form = SignUpForm(request.POST or None, request.FILES or None, instance=current_user)
-        profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_user)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            login(request, current_user)
-            messages.success(request, ("Você atualizou seu perfil."))
-            return redirect('home')     
-        return render(request, "update_user.html", {'user_form':user_form, 'profile_form':profile_form})
+        
+        if request.method == 'POST':
+            user_form = UserUpdateForm(request.POST, instance=current_user)
+            profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile_user)
+            
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                messages.success(request, "Você atualizou seu perfil.")
+                return redirect('home')
+        else:
+            user_form = UserUpdateForm(instance=current_user)
+            profile_form = ProfileUpdateForm(instance=profile_user)
+        
+        return render(request, 'update_user.html', {'user_form': user_form, 'profile_form': profile_form})
     else:
-        messages.success(request, ("Você tem que logar primeiro ..."))
+        messages.success(request, "Você tem que logar primeiro ...")
         return redirect('home')
     
 def tweet_like(request, pk):
