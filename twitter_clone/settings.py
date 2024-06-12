@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-aws^svhn9we*2lx+odnk$sy5d^$u+ff1^j91jutid-y#ho%_c=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'Papudim.pythonanywhere.com']
 
 
 # Application definition
